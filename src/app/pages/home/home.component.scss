@@ -1,3 +1,5 @@
+@import './../../styles/litera.scss';
+
 .status-card {
   margin-top: 1em;
 }
@@ -12,4 +14,14 @@
 
 .log-date-section {
   margin: 1em 0;
+}
+
+.table-logs {
+  margin-bottom: 0;
+}
+
+.table-logs-container {
+  max-height: 600px; 
+  overflow: auto;
+  border: 1px solid $gray-lighter;
 }

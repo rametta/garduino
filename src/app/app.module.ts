@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { HttpModule } from '@angular/http';
 
 // 3rd Party
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -20,7 +21,20 @@ import { CalendarComponent } from './components/calendar/calendar.component';
 // Routing Module
 import { AppRoutingModule } from './app.routing';
 
+// Service
+import { AppService } from './app.service';
+
 @NgModule({
+    imports: [
+    BrowserModule,
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpModule,
+    NgbModule.forRoot(),
+
+    AppRoutingModule
+  ],
   declarations: [
     AppComponent,
     HomePageComponent,
@@ -30,16 +44,8 @@ import { AppRoutingModule } from './app.routing';
     DatepickerComponent,
     CalendarComponent
   ],
-  imports: [
-    BrowserModule,
-    RouterModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgbModule.forRoot(),
 
-    AppRoutingModule
-  ],
-  providers: [],
+  providers: [AppService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

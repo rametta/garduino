@@ -6,7 +6,8 @@
           <h4 class="card-title d-flex align-items-center">
             <i class="fa fa-thermometer-half"></i>&nbsp;
             <span>Temperature</span>
-            <span class="ml-auto">22&deg;C</span></h4>
+            <span class="ml-auto">22&deg;C</span>
+          </h4>
         </div>
       </div>
     </div>
@@ -16,7 +17,8 @@
           <h4 class="card-title d-flex align-items-center">
             <i class="fa fa-tint"></i>&nbsp;
             <span>Soil Moisture</span>
-            <span class="ml-auto">4/10</span></h4>
+            <span class="ml-auto">4/10</span>
+          </h4>
         </div>
       </div>
     </div>
@@ -26,7 +28,8 @@
           <h4 class="card-title d-flex align-items-center">
             <i class="fa fa-sun-o"></i>&nbsp;
             <span>Light Level</span>
-            <span class="ml-auto">6/10</span></h4>
+            <span class="ml-auto">6/10</span>
+          </h4>
         </div>
       </div>
     </div>
@@ -36,7 +39,8 @@
           <h4 class="card-title d-flex align-items-center">
             <i class="fa fa-tint"></i>&nbsp;
             <span>Humidity</span>
-            <span class="ml-auto">34&deg;C</span></h4>
+            <span class="ml-auto">34&deg;C</span>
+          </h4>
         </div>
       </div>
     </div>
@@ -46,84 +50,44 @@
 <section class="container-fluid logs-section">
   <h2 id="logs">Logs</h2>
   <div class="row">
-    <div class="col-xl-6 col-lg-9 col-sm-12 log-date-section">
+    <div class="col-lg-4 col-md-6 col-sm-12 log-date-section">
       <app-datepicker></app-datepicker>
     </div>
-    <div class="col-lg-3 push-xl-3 log-date-section">
+    <div class="col-lg-3 col-md-6 push-xl-5 push-lg-5 log-date-section">
       <app-calendar></app-calendar>
     </div>
   </div>
   <div class="row">
     <div class="col-lg-12">
 
-      <div class="table-responsive">
-        <table class="table table-sm">
+      <div class="table-responsive table-logs-container">
+        <table class="table table-sm table-logs">
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Time</th>
-              <th class="text-right"><i class="fa fa-thermometer-half"></i> Temperature</th>
-              <th class="text-right"><i class="fa fa-tint"></i> Moisture</th>
-              <th class="text-right"><i class="fa fa-sun-o"></i> Light Level</th>
-              <th class="text-right"><i class="fa fa-tint"></i> Humidity</th>
+              <th>
+                <div ngbTooltip="Time"><i class="fa fa-clock-o"></i> <span class="hidden-xs-down">Time</span></div>
+              </th>
+              <th class="text-right">
+                <div ngbTooltip="Temperature"><i class="fa fa-thermometer-half"></i> <span class="hidden-xs-down">Temperature</span></div>
+              </th>
+              <th class="text-right">
+                <div ngbTooltip="Humidity"><i class="fa fa-tint"></i> <span class="hidden-xs-down">Humidity</span></div>
+              </th>
+              <th class="text-right">
+                <div ngbTooltip="Light Level"><i class="fa fa-sun-o"></i> <span class="hidden-xs-down">Light Level</span></div>
+              </th>
+              <th class="text-right">
+                <div ngbTooltip="Moisture"><i class="fa fa-tint"></i> <span class="hidden-xs-down">Moisture</span></div>
+              </th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Jan 4, 2017</td>
-              <td>7:00AM</td>
-              <td class="text-right">45</td>
-              <td class="text-right">4</td>
-              <td class="text-right">6</td>
-              <td class="text-right">54</td>
-            </tr>
-            <tr>
-              <td>Jan 4, 2017</td>
-              <td>8:00AM</td>
-              <td class="text-right">45</td>
-              <td class="text-right">4</td>
-              <td class="text-right">6</td>
-              <td class="text-right">54</td>
-            </tr>
-            <tr>
-              <td>Jan 4, 2017</td>
-              <td>8:00AM</td>
-              <td class="text-right">45</td>
-              <td class="text-right">4</td>
-              <td class="text-right">6</td>
-              <td class="text-right">54</td>
-            </tr>
-            <tr>
-              <td>Jan 4, 2017</td>
-              <td>8:00AM</td>
-              <td class="text-right">45</td>
-              <td class="text-right">4</td>
-              <td class="text-right">6</td>
-              <td class="text-right">54</td>
-            </tr>
-            <tr>
-              <td>Jan 4, 2017</td>
-              <td>8:00AM</td>
-              <td class="text-right">45</td>
-              <td class="text-right">4</td>
-              <td class="text-right">6</td>
-              <td class="text-right">54</td>
-            </tr>
-            <tr>
-              <td>Jan 4, 2017</td>
-              <td>8:00AM</td>
-              <td class="text-right">45</td>
-              <td class="text-right">4</td>
-              <td class="text-right">6</td>
-              <td class="text-right">54</td>
-            </tr>
-            <tr>
-              <td>Jan 4, 2017</td>
-              <td>8:00AM</td>
-              <td class="text-right">45</td>
-              <td class="text-right">4</td>
-              <td class="text-right">6</td>
-              <td class="text-right">54</td>
+            <tr *ngFor="let log of logs | async">
+              <td>{{log.date}}</td>
+              <td class="text-right">{{log.temperature}}</td>
+              <td class="text-right">{{log.humidity}}</td>
+              <td class="text-right">{{log.light}}</td>
+              <td class="text-right">{{log.moisture}}</td>
             </tr>
           </tbody>
         </table>
