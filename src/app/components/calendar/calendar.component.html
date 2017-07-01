@@ -1,0 +1,8 @@
+<form [formGroup]="dateForm" novalidate>
+	<div class="input-group">
+		<input formControlName="date" class="form-control" placeholder="Date" name="dp" [navigation]="'arrows'" ngbDatepicker #d="ngbDatepicker">
+		<div class="input-group-addon hand" (click)="d.toggle()">
+			<i class="fa fa-calendar"></i>
+		</div>
+	</div>
+</form>
