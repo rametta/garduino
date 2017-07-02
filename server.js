@@ -2,54 +2,54 @@ const express = require('express');
 const helmet = require('helmet');
 const compression = require('compression');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const moment = require('moment');
+//const Garden = require('./models/garden');
 
+const DB_CONNECTION = 'mongodb://localhost/garden_db';
+let Garden;
+
+// Express Static File & API Server
 const app = express();
 const router = express.Router();
-const v4 = '/client/dist';
+const web = '/client/dist';
 const port = process.env.PORT || 8080;
-
-let gardens = [
-  {
-    _id: 1,
-    date: new Date(2017, 1, 1, 1, 1, 1, 1).toISOString(),
-    temperature: 3.2233423,
-    humidity: 1.123235,
-    moisture: 34.234,
-    light: 4
-  },
-  {
-    _id: 2,
-    date: new Date(2017, 2, 2, 2, 2, 2, 2).toISOString(),
-    temperature: 3.2233423,
-    humidity: 1.123235,
-    moisture: 34.234,
-    light: 5
-  },
-  {
-    _id: 3,
-    date: new Date(2017, 3, 3, 3, 3, 3, 3).toISOString(),
-    temperature: 3.2233423,
-    humidity: 1.123235,
-    moisture: 34.234,
-    light: 6
-  }
-];
 
 app
   .use(bodyParser.urlencoded({ extended: true }))
   .use(bodyParser.json())
   .use(helmet()) // Applies security precautions
   .use(compression()) // gzip compress
-  .use('/', express.static(__dirname + v4, { maxAge: '20d' }))
+  .use('/', express.static(__dirname + web, { maxAge: '20d' }))
   .use('/api', router)
+  .use('*', (req, res) => res.sendFile(__dirname + web + '/index.html'))
 
-  .use('*', (req, res, next) => {
-    res.sendFile(__dirname + v4 + '/index.html');
+// Mongo database
+mongoose.Promise = global.Promise;
+mongoose.connect(DB_CONNECTION, { useMongoClient: true });
+const db = mongoose.connection.collections;
+mongoose.connection
+  .once('open', () => {
+    console.log('Database connected')
+
+    const Schema = mongoose.Schema;
+
+    const GardenSchema = new Schema({
+      date: Date,
+      temperature: Number,
+      humidity: Number,
+      moisture: Number,
+      light: Number
+    });
+
+    Garden = mongoose.model('garden', GardenSchema);
+
+    // Start the express server after connecting to DB
+    app.listen(port, () => {
+      console.log(`Listening on http://localhost:${port}`);
+    });
   })
-
-  .listen(port, () => {
-    console.log(`Listening on http://localhost:${port}`);
-  });
+  .on('error', () => console.error('Database connection error'));
 
 router
   .get('/', (req, res) => {
@@ -82,28 +82,53 @@ router
     });
   })
 
-// All gardens
-router.route('/gardens')
+// Insert a new fake document in collection
+router.route('/fake')
   .get((req, res) => {
-    res.json(gardens);
+
+    const g = new Garden({
+      date: new Date(),
+      temperature: 3.12,
+      humidity: 45452.4,
+      moisture: 34,
+      light: 5.6
+    });
+
+    g.save()
+      .then(doc => res.json(doc))
+      .catch(err => res.json(err));
   })
+
+router.route('/gardens')
+
+  /**
+   * Get an array of Gardens, filterable by date
+   * @param {Date} date
+   * @return {Array<Garden>}
+   */ 
+  .get((req, res) => {
+    //const date = moment(req.params.date).toDate();
+    db.gardens
+      .find({ })
+      .toArray()
+      .then(result => res.json(result))
+      .catch(err => res.json(err));
+  })
+
+  /**
+   * Update or insert Gradens
+   * @param {Array<Garden>} gardens
+   * @return {Array<Garden>}
+   */
   .post((req, res) => {
     res.json(req.body);
   })
 
-// Delete one garden
-router.route('/gardens/delete')
-  .post((req, res) => {
-    gardens = gardens.filter(g => g._id != req.body.id);
-    res.json(true);
+  /**
+   * Delete gardens
+   * @param {Array<Garden>} gardens
+   * @return {Array<Garden>}
+   */
+  .delete((req, res) => {
+    res.json('delete')
   })
-
-// Get/Update one garden
-router.route('/gardens/:id')
-  .get((req, res) => {
-    res.json(gardens.find(g => g._id == req.params.id));
-  })
-  .post((req, res) => {
-
-  })
-
