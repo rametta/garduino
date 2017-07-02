@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/first';
 
 import { AppService } from './../../app.service';
-import { GardenLog } from './../../app';
+import { Garden } from './../../app';
 
 @Component({
   selector: 'app-home-page',
@@ -13,11 +13,23 @@ import { GardenLog } from './../../app';
 })
 export class HomePageComponent implements OnInit {
 
-  logs: Observable<Array<GardenLog>>;
+  edit: false;
+  logs: Array<Garden>;
 
   constructor(public appService: AppService) { }
 
   ngOnInit(): void {
-    this.logs = this.appService.getLogs('');
+    this.appService
+      .getGardens(new Date().toDateString())
+      .first()
+      .subscribe(logs => this.logs = logs);
   }
- }
+
+  deleteGarden(id: string): void {
+    console.log(`Deleting ${id}`);
+    this.logs = this.logs.filter(log => log._id !== id);
+    this.appService.deleteGarden(id)
+      .first()
+      .subscribe();
+  }
+}

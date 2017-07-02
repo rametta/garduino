@@ -1,4 +1,5 @@
-export interface GardenLog {
+export interface Garden {
+  _id?: string;
   date: string;
   temperature: number;
   humidity: number;
