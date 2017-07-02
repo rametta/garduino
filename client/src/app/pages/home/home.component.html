@@ -84,7 +84,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let log of logs">
-              <td>{{log.date}}</td>
+              <td>{{log.date | date:'shortTime'}}</td>
               <td class="text-right">{{log.temperature.toFixed(2)}}</td>
               <td class="text-right">{{log.humidity.toFixed(2)}}</td>
               <td class="text-right">{{log.light.toFixed(2)}}</td>
