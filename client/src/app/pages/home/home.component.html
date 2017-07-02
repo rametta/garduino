@@ -98,6 +98,7 @@
   </div>
   <div class="edit-btn-row d-flex">
     <div>Records: {{logs?.length || 0}}</div>
+    <div class="loading"><i class="fa fa-spin fa-spinner primary" [hidden]="!loading"></i></div>
     <div class="ml-auto">
       <button class="btn btn-primary hand" (click)="edit = !edit"><span [hidden]="edit">Edit</span><span [hidden]="!edit">Done</span>  <i class="fa fa-edit"></i></button>
     </div>
