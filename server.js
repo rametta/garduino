@@ -62,22 +62,20 @@ router
         {
           type: 'GET',
           route: `${BASE}/api/gardens`,
-          returns: 'An array of garden objects'
+					params: `date`,
+          returns: '{Array<Garden>} An array of garden objects'
         },
-        {
-          type: 'GET',
-          route: `${BASE}/api/garden/{id}`,
-          returns: 'One garden object'
-        },
-        {
+				{
           type: 'POST',
-          route: `${BASE}/api/garden/{id}`,
-          returns: 'Insert/update a new/existing garden'
+          route: `${BASE}/api/gardens`,
+					params: `garden`,
+          returns: '{Array<Garden>} An array of garden objects modified/inserted'
         },
-        {
+				{
           type: 'DELETE',
-          route: `${BASE}/api/garden/{id}`,
-          returns: 'Delete a garden object'
+          route: `${BASE}/api/gardens`,
+					params: `id`,
+          returns: '{number} Documents deleted'
         }
       ]
     });
