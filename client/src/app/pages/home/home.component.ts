@@ -56,6 +56,7 @@ export class HomePageComponent implements OnInit {
     this.appService.deleteGarden(id)
       .first()
       .subscribe(res => {
+				console.log(res)
         this.loading = false;
         if (res) {
           this.logs = this.logs.filter(l => l._id !== id);

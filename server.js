@@ -4,6 +4,7 @@ const compression = require('compression');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const moment = require('moment');
+const ObjectId = mongoose.Types.ObjectId;
 //const Garden = require('./models/garden');
 
 const DB_CONNECTION = 'mongodb://localhost/garden_db';
@@ -86,12 +87,14 @@ router
 router.route('/fake')
   .get((req, res) => {
 
+		const { temperature, humidity, moisture, light } = req.query;
+		
     const g = new Garden({
       date: new Date(),
-      temperature: 3.12,
-      humidity: 45452.4,
-      moisture: 34,
-      light: 5.6
+      temperature,
+      humidity,
+      moisture,
+      light
     });
 
     g.save()
@@ -107,9 +110,15 @@ router.route('/gardens')
    * @return {Array<Garden>}
    */ 
   .get((req, res) => {
-    //const date = moment(req.params.date).toDate();
+		const date = moment(req.query.date);
+    const day = date.date();
+		const month = date.month();
+		const year = date.year();
+		const today = new Date(year, month, day);
+		const tomorrow = moment(today).add(1, 'day').toDate();
+
     db.gardens
-      .find({ })
+      .find({ date: { "$gte": today, "$lt": tomorrow } })
       .toArray()
       .then(result => res.json(result))
       .catch(err => res.json(err));
@@ -125,10 +134,13 @@ router.route('/gardens')
   })
 
   /**
-   * Delete gardens
-   * @param {Array<Garden>} gardens
-   * @return {Array<Garden>}
+   * Delete garden
+   * @param {String} id
+   * @return {Number|Error}
    */
   .delete((req, res) => {
-    res.json('delete')
+		db.gardens
+			.deleteOne({_id: ObjectId(req.body.id)})
+			.then(val => res.json(val.deletedCount))
+			.catch(err => res.json(err))
   })
