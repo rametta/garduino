@@ -1,106 +1,147 @@
 <section class="container-fluid">
-	<div class="row">
-		<div class="col-xl-3 col-md-6 col-sm-12">
-			<div class="card card-inverse card-success text-xs-center status-card">
-				<div class="card-block">
-					<h4 class="card-title d-flex align-items-center">
-						<i class="fa fa-thermometer-half"></i>&nbsp;
-						<span>Temperature</span>
-						<span class="ml-auto">22&deg;C</span>
-					</h4>
-				</div>
-			</div>
-		</div>
-		<div class="col-xl-3 col-md-6 col-sm-12">
-			<div class="card card-inverse card-danger text-xs-center status-card">
-				<div class="card-block">
-					<h4 class="card-title d-flex align-items-center">
-						<i class="fa fa-tint"></i>&nbsp;
-						<span>Moisture</span>
-						<span class="ml-auto">4/10</span>
-					</h4>
-				</div>
-			</div>
-		</div>
-		<div class="col-xl-3 col-md-6 col-sm-12">
-			<div class="card card-inverse card-warning text-xs-center status-card">
-				<div class="card-block">
-					<h4 class="card-title d-flex align-items-center">
-						<i class="fa fa-sun-o"></i>&nbsp;
-						<span>Light Level</span>
-						<span class="ml-auto">6/10</span>
-					</h4>
-				</div>
-			</div>
-		</div>
-		<div class="col-xl-3 col-md-6 col-sm-12">
-			<div class="card card-inverse card-success text-xs-center status-card">
-				<div class="card-block">
-					<h4 class="card-title d-flex align-items-center">
-						<i class="fa fa-tint"></i>&nbsp;
-						<span>Humidity</span>
-						<span class="ml-auto">34&deg;C</span>
-					</h4>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div class="row">
+    <div class="col-xl-3 col-md-6 col-sm-12">
+      <div class="card card-inverse card-success text-xs-center status-card">
+        <div class="card-block">
+          <h4 class="card-title d-flex align-items-center">
+            <i class="fa fa-thermometer-half"></i>&nbsp;
+            <span>Temperature</span>
+            <span class="ml-auto">22&deg;C</span>
+          </h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6 col-sm-12">
+      <div class="card card-inverse card-danger text-xs-center status-card">
+        <div class="card-block">
+          <h4 class="card-title d-flex align-items-center">
+            <i class="fa fa-tint"></i>&nbsp;
+            <span>Moisture</span>
+            <span class="ml-auto">4/10</span>
+          </h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6 col-sm-12">
+      <div class="card card-inverse card-warning text-xs-center status-card">
+        <div class="card-block">
+          <h4 class="card-title d-flex align-items-center">
+            <i class="fa fa-sun-o"></i>&nbsp;
+            <span>Light Level</span>
+            <span class="ml-auto">6/10</span>
+          </h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6 col-sm-12">
+      <div class="card card-inverse card-success text-xs-center status-card">
+        <div class="card-block">
+          <h4 class="card-title d-flex align-items-center">
+            <i class="fa fa-tint"></i>&nbsp;
+            <span>Humidity</span>
+            <span class="ml-auto">34&deg;C</span>
+          </h4>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section class="container-fluid logs-section">
-	<h2 id="logs">Logs</h2>
-	<div class="row">
-		<div class="col-lg-4 col-md-6 col-sm-12 log-date-section">
-			<app-datepicker></app-datepicker>
-		</div>
-		<div class="col-lg-3 col-md-6 push-xl-5 push-lg-5 log-date-section">
-			<app-calendar></app-calendar>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-lg-12">
+  <div class="row">
+    <div class="col-lg-4 col-md-6 col-sm-12 log-date-section">
+      <app-datepicker [hidden]="edit"></app-datepicker>
+    </div>
+    <div class="col-lg-3 col-md-6 push-xl-5 push-lg-5 log-date-section">
+      <app-calendar [hidden]="edit"></app-calendar>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
 
-			<div class="table-responsive table-logs-container">
-				<table class="table table-sm table-logs">
-					<thead>
-						<tr>
-							<th>
-								<i class="fa fa-clock-o" ngbTooltip="Time" placement="right"></i> <span class="hidden-xs-down">Time</span>
-							</th>
-							<th class="text-right">
-								<i class="fa fa-thermometer-half" ngbTooltip="Temperature"></i> <span class="hidden-xs-down">Temperature</span>
-							</th>
-							<th class="text-right">
-								<i class="fa fa-tint" ngbTooltip="Humidity"></i> <span class="hidden-xs-down">Humidity</span>
-							</th>
-							<th class="text-right">
-								<i class="fa fa-sun-o" ngbTooltip="Light Level"></i> <span class="hidden-xs-down">Light Level</span>
-							</th>
-							<th class="text-right">
-								<i class="fa fa-tint" ngbTooltip="Moisture" placement="left"></i> <span class="hidden-xs-down">Moisture</span>
-							</th>
-							<th [hidden]="!edit"></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr *ngFor="let log of logs">
-							<td>{{log.date | date:'shortTime'}}</td>
-							<td class="text-right">{{log.temperature?.toFixed(2)}}</td>
-							<td class="text-right">{{log.moisture?.toFixed(2)}}</td>
-							<td class="text-right">{{log.humidity?.toFixed(2)}}</td>
-							<td class="text-right">{{log.light?.toFixed(2)}}</td>
-							<td class="text-right" [hidden]="!edit"><i class="fa fa-times danger hand" (click)="deleteGarden(log._id)"></i></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-	<div class="edit-btn-row d-flex">
-		<div>Records: {{logs?.length || 0}}</div>
-		<div class="loading"><i class="fa fa-spin fa-spinner primary" [hidden]="!loading"></i></div>
-		<div class="ml-auto">
-			<button *ngIf="logs?.length > 0" class="btn btn-primary hand" (click)="edit = !edit"><span [hidden]="edit">Edit</span><span [hidden]="!edit">Done</span>  <i class="fa fa-edit"></i></button>
-		</div>
-	</div>
+      <div class="card">
+        <div class="card-header d-flex">
+          <strong>Logs</strong>
+          <div class="loading">
+            <app-loading [hidden]="!loading"></app-loading>
+          </div>
+          <div class="ml-auto">
+            <div>Records: {{gardens?.length || 0}}</div>
+          </div>
+        </div>
+        <div class="card-block">
+          <div class="table-responsive table-logs-container">
+            <table class="table table-sm table-logs">
+              <thead>
+                <tr>
+                  <th>
+                    <span ngbTooltip="Time" placement="top">
+                      <i class="fa fa-clock-o"></i> <span class="hidden-xs-down">Time</span>
+                    </span>
+                  </th>
+                  <th class="text-right">
+                    <span ngbTooltip="Temperature" placement="top">
+                      <i class="fa fa-thermometer-half"></i> <span class="hidden-xs-down">Temperature</span>
+                    </span>
+                  </th>
+                  <th class="text-right">
+                    <span ngbTooltip="Humidity" placement="top">
+                      <i class="fa fa-tint"></i> <span class="hidden-xs-down">Humidity</span>
+                    </span>
+                  </th>
+                  <th class="text-right">
+                    <span ngbTooltip="Light Level" placement="top">
+                      <i class="fa fa-sun-o"></i> <span class="hidden-xs-down">Light Level</span>
+                    </span>
+                  </th>
+                  <th class="text-right">
+                    <span ngbTooltip="Moisture" placement="top">
+                      <i class="fa fa-tint"></i> <span class="hidden-xs-down">Moisture</span>
+                    </span>
+                  </th>
+                  <th [hidden]="!edit"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let garden of gardens">
+                  <td class="time">
+                    <span [textContent]="garden.date | date:'shortTime'"></span>
+                  </td>
+                  <td class="text-right">
+                    <span [textContent]="garden.temperature?.toFixed(2)" [hidden]="edit"></span>
+                    <input type="number" class="form-control form-control-sm" [(ngModel)]="garden.temperature" [hidden]="!edit" />
+                  </td>
+                  <td class="text-right">
+                    <span [textContent]="garden.moisture?.toFixed(2)" [hidden]="edit"></span>
+                    <input type="number" class="form-control form-control-sm" [(ngModel)]="garden.moisture" [hidden]="!edit" />
+                  </td>
+                  <td class="text-right">
+                    <span [textContent]="garden.humidity?.toFixed(2)" [hidden]="edit"></span>
+                    <input type="number" class="form-control form-control-sm" [(ngModel)]="garden.humidity" [hidden]="!edit" />
+                  </td>
+                  <td class="text-right">
+                    <span [textContent]="garden.light?.toFixed(2)" [hidden]="edit"></span>
+                    <input type="number" class="form-control form-control-sm" [(ngModel)]="garden.light" [hidden]="!edit" />
+                  </td>
+                  <td class="text-right" [hidden]="!edit"><i class="fa fa-times danger hand" (click)="deleteGardens([garden._id])"></i></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="d-flex">
+            <div class="ml-auto">
+              <button class="btn btn-success hand" (click)="newGarden()">New</button>
+              <button class="btn btn-primary hand" [hidden]="!edit" (click)="edit = !edit; putGardens()">Save</button>
+              <button class="btn btn-secondary hand" [hidden]="!edit" (click)="edit = !edit; getGardens()">Cancel</button>
+              <button *ngIf="gardens?.length > 0" class="btn btn-primary hand" (click)="edit = !edit" [hidden]="edit">Edit <i class="fa fa-edit"></i></button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </section>

@@ -17,6 +17,7 @@ import { SettingsPageComponent } from './pages/settings/settings.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { DatepickerComponent } from './components/datepicker/datepicker.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
+import { LoadingComponent } from './components/loading/loading.component';
 
 // Routing Module
 import { AppRoutingModule } from './app.routing';
@@ -42,7 +43,8 @@ import { AppService } from './app.service';
 
     NavbarComponent,
     DatepickerComponent,
-    CalendarComponent
+    CalendarComponent,
+    LoadingComponent
   ],
 
   providers: [AppService],

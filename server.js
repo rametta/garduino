@@ -1,4 +1,5 @@
 const express = require('express');
+const winston = require('winston');
 const helmet = require('helmet');
 const compression = require('compression');
 const bodyParser = require('body-parser');
@@ -7,6 +8,8 @@ const moment = require('moment');
 const ObjectId = mongoose.Types.ObjectId;
 //const Garden = require('./models/garden');
 
+const today = moment().format('YYYYMMDD')
+winston.add(winston.transports.File, { filename: `./logs/${today}.log` });
 const DB_CONNECTION = 'mongodb://localhost/garden_db';
 let Garden;
 
@@ -31,7 +34,7 @@ mongoose.connect(DB_CONNECTION, { useMongoClient: true });
 const db = mongoose.connection.collections;
 mongoose.connection
   .once('open', () => {
-    console.log('Database connected')
+    winston.info('Database connected', { database: mongoose.connection.db.databaseName })
 
     const Schema = mongoose.Schema;
 
@@ -47,10 +50,10 @@ mongoose.connection
 
     // Start the express server after connecting to DB
     app.listen(port, () => {
-      console.log(`Listening on http://localhost:${port}`);
+      winston.info(`App started`, { port });
     });
   })
-  .on('error', () => console.error('Database connection error'));
+  .on('error', () => winston.error('Database connection error'));
 
 router
   .get('/', (req, res) => {
@@ -62,83 +65,119 @@ router
         {
           type: 'GET',
           route: `${BASE}/api/gardens`,
-					params: `date`,
+          params: `date`,
           returns: '{Array<Garden>} An array of garden objects'
         },
-				{
+        {
           type: 'POST',
           route: `${BASE}/api/gardens`,
-					params: `garden`,
+          params: `garden`,
           returns: '{Array<Garden>} An array of garden objects modified/inserted'
         },
-				{
+        {
           type: 'DELETE',
           route: `${BASE}/api/gardens`,
-					params: `id`,
+          params: `id`,
           returns: '{number} Documents deleted'
         }
       ]
     });
   })
 
-// Insert a new fake document in collection
-router.route('/fake')
-  .get((req, res) => {
-
-		const { temperature, humidity, moisture, light } = req.query;
-		
-    const g = new Garden({
-      date: new Date(),
-      temperature,
-      humidity,
-      moisture,
-      light
-    });
-
-    g.save()
-      .then(doc => res.json(doc))
-      .catch(err => res.json(err));
-  })
-
 router.route('/gardens')
 
   /**
-   * Get an array of Gardens, filterable by date
-   * @param {Date} date
+   * Get gardens
+   * @param {string} date
    * @return {Array<Garden>}
-   */ 
+   */
   .get((req, res) => {
-		const date = moment(req.query.date);
+    const date = moment(req.query.date);
     const day = date.date();
-		const month = date.month();
-		const year = date.year();
-		const today = new Date(year, month, day);
-		const tomorrow = moment(today).add(1, 'day').toDate();
+    const month = date.month();
+    const year = date.year();
+    const today = new Date(year, month, day);
+    const tomorrow = moment(today).add(1, 'day').toDate();
 
     db.gardens
       .find({ date: { "$gte": today, "$lt": tomorrow } })
       .toArray()
-      .then(result => res.json(result))
-      .catch(err => res.json(err));
+      .then(val => {
+        winston.info(`Found ${val.length} garden(s)`);
+        res.json(val) 
+      })
+      .catch(err => {
+        winston.error(err);
+        res.json(err);
+      })
   })
 
   /**
-   * Update or insert Gradens
+   * Insert gardens
    * @param {Array<Garden>} gardens
    * @return {Array<Garden>}
    */
   .post((req, res) => {
-    res.json(req.body);
+    const gardens = req.body.gardens.map(g => {
+      const garden = new Garden();
+      garden.date = g.date;
+      return garden;
+    });
+
+    db.gardens
+      .insertMany(gardens)
+      .then(val => {
+        winston.info(`Inserted ${val.insertedCount} garden(s)`);
+        res.json(val.ops)
+      })
+      .catch(err => {
+        winston.error(err);
+        res.json(err);
+      })
   })
 
   /**
-   * Delete garden
-   * @param {String} id
-   * @return {Number|Error}
+   * Update gardens
+   * @param {Array<Garden>} gardens
+   * @return {Array<Garden>}
+   */
+  .put((req, res) => {
+    const gardens = req.body.gardens.map(g => {
+      const garden = new Garden();
+      garden.date = g.date;
+      return garden;
+    });
+
+    db.gardens
+      .updateMany(gardens, gardens)
+      .then(val => {
+        winston.info(`Updated ${val.modifiedCount} garden(s)`);
+        res.json(val.ops)
+      })
+      .catch(err => {
+        winston.error(err);
+        res.json(err);
+      });
+
+    res.json(gardens);
+  })
+
+  /**
+   * Delete gardens
+   * @param {Array<string>} ids Array of ids to delete
+   * @return {number|Error} Returns the count of deletions
    */
   .delete((req, res) => {
-		db.gardens
-			.deleteOne({_id: ObjectId(req.body.id)})
-			.then(val => res.json(val.deletedCount))
-			.catch(err => res.json(err))
+    const gardenIds = req.body.ids.map(i => ObjectId(i));
+
+    db.gardens
+      .deleteMany({ _id: { $in: gardenIds } })
+      .then(val => {
+        winston.info(`Deleted ${val.deletedCount} garden(s)`);
+        res.json(val.deletedCount)
+      })
+      .catch(err => {
+        winston.error(err);
+        res.json(err);
+      })
   })

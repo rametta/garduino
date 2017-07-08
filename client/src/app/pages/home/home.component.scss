@@ -24,12 +24,13 @@
   max-height: 600px; 
   overflow: auto;
   border: 1px solid $gray-lighter;
-}
-
-.edit-btn-row {
-  margin: .5em 0;
+  margin-bottom: 1em;
 }
 
 .loading {
   margin-left: .5em
+}
+
+.time {
+  white-space: nowrap;
 }

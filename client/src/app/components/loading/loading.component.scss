@@ -1,0 +1,10 @@
+@import './../../styles/litera.scss';
+
+.loader {
+  height: .5em;
+}
+
+svg path,
+svg rect{
+  fill: $brand-primary;
+}

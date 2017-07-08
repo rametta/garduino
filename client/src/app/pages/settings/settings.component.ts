@@ -31,9 +31,9 @@ export class SettingsPageComponent implements OnInit {
 		const moisture = this.manualForm.get('moisture').value;
 		const light = this.manualForm.get('light').value;
 
-		this.appService.fakeGarden(temperature, humidity, moisture, light)
-			.first()
-			.subscribe();
+		// this.appService.fakeGarden(temperature, humidity, moisture, light)
+		// 	.first()
+		// 	.subscribe();
 	}
 
 }

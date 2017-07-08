@@ -13,8 +13,7 @@ import 'rxjs/add/operator/mergeMap';
 
 import * as moment from 'moment';
 
-import { AppService } from './../../app.service';
-import { Garden } from './../../app';
+import { AppService, Garden } from './../../app.service';
 
 @Component({
   selector: 'app-home-page',
@@ -25,7 +24,8 @@ export class HomePageComponent implements OnInit {
 
   edit = false;
   loading = false;
-  logs: Array<Garden>;
+  gardens: Array<Garden>;
+  params: Params;
 
   constructor(
     public appService: AppService,
@@ -35,32 +35,76 @@ export class HomePageComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams
       .mergeMap((params: Params) => {
+        this.params = params;
         const date = moment(params.date).toDate().toISOString();
-        return this.getGardens(date);
+        return this.getGardens$(date);
       })
-      .subscribe(logs => {
+      .subscribe(gardens => {
+        console.log(gardens)
         this.loading = false;
-        this.logs = logs;
+        this.gardens = gardens;
       });
   }
 
-  getGardens(date: string): Observable<Array<Garden>> {
+  getGardens$(date: string): Observable<Array<Garden>> {
     this.loading = true;
     return this.appService
       .getGardens(date)
       .first()
   }
 
-  deleteGarden(id: string): void {
+  putGardens(gardens = this.gardens): void {
     this.loading = true;
-    this.appService.deleteGarden(id)
+    this.appService
+      .putGardens(this.gardens)
       .first()
-      .subscribe(res => {
-				console.log(res)
+      .subscribe(gardens => {
+        console.log(gardens);
         this.loading = false;
-        if (res) {
-          this.logs = this.logs.filter(l => l._id !== id);
+        this.gardens = gardens;
+      });
+  }
+
+  getGardens(): void {
+    this.getGardens$(this.params.date)
+      .subscribe(gardens => {
+        this.loading = false;
+        this.gardens = gardens;
+      });
+  }
+
+  deleteGardens(ids: Array<string>): void {
+    this.loading = true;
+    this.appService
+      .deleteGardens(ids)
+      .first()
+      .subscribe(deleteCount => {
+        console.log(deleteCount);
+        this.loading = false;
+        if (deleteCount > 0) {
+          this.gardens = this.gardens.filter(l => !(ids.indexOf(l._id) > -1));
         }
       });
+  }
+
+  postGardens(gardens: Array<Garden>): void {
+    this.loading = true;
+    this.appService
+      .postGardens(gardens)
+      .first()
+      .subscribe(gardens => {
+        this.loading = false;
+        if (gardens.length > 0) {
+          gardens.forEach(garden => {
+            this.gardens.push(garden);
+          });
+        }
+      });
+  }
+
+  newGarden(): void {
+    const garden = new Garden();
+    garden.date = moment(this.params.date || new Date()).toDate().toISOString();
+    this.postGardens([garden]);
   }
 }
