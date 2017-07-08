@@ -36,13 +36,13 @@ export class AppService {
   }
 
   /**
-   * Update gardens
-   * @param {Array<Garden>} gardens
-   * @returns {Array<Garden>} the saved gardens in the database.
+   * Update garden
+   * @param {Garden} garden
+   * @returns {number} Amount of gardens updated
    */
-  putGardens(gardens: Array<Garden>): Observable<Array<Garden>> {
+  putGarden(garden: Garden): Observable<number> {
     return this.http
-      .put('/api/gardens', { gardens })
+      .put('/api/gardens', { garden })
       .map(extractData)
       .catch(handleError);
   }

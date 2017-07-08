@@ -47,7 +47,7 @@ Data stored in MongoDB using Mongoose.
 | Task     | Status |
 | -------- | ------ |
 | Client side interface | 100%
-| Node CRUD API | 80%
+| Node CRUD API | 100%
 | Pi Connection to Arduino | 0%
 | Arduino Program | 0%
 | Circuit prototype | 0%

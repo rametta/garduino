@@ -26,6 +26,7 @@ export class HomePageComponent implements OnInit {
   loading = false;
   gardens: Array<Garden>;
   params: Params;
+  gardensToDelete: Array<string> = [];
 
   constructor(
     public appService: AppService,
@@ -36,8 +37,7 @@ export class HomePageComponent implements OnInit {
     this.route.queryParams
       .mergeMap((params: Params) => {
         this.params = params;
-        const date = moment(params.date).toDate().toISOString();
-        return this.getGardens$(date);
+        return this.getGardens$(params.date || new Date().toISOString());
       })
       .subscribe(gardens => {
         console.log(gardens)
@@ -53,26 +53,35 @@ export class HomePageComponent implements OnInit {
       .first()
   }
 
-  putGardens(gardens = this.gardens): void {
+  /**
+   * Update a garden
+   * @param {Garden} garden The garden to update
+   */
+  putGarden(garden: Garden): void {
     this.loading = true;
     this.appService
-      .putGardens(this.gardens)
+      .putGarden(garden)
       .first()
-      .subscribe(gardens => {
-        console.log(gardens);
+      .subscribe(modifedCount => {
         this.loading = false;
-        this.gardens = gardens;
       });
   }
 
+  /**
+   * Get gardens
+   */
   getGardens(): void {
-    this.getGardens$(this.params.date)
+    this.getGardens$(this.params.date || new Date().toISOString())
       .subscribe(gardens => {
         this.loading = false;
         this.gardens = gardens;
       });
   }
 
+  /**
+   * Delete gardens
+   * @param {Array<string>} ids The array of ids to delete
+   */
   deleteGardens(ids: Array<string>): void {
     this.loading = true;
     this.appService
@@ -87,6 +96,10 @@ export class HomePageComponent implements OnInit {
       });
   }
 
+  /**
+   * Insert new gardens
+   * @param {Array<Garden>} gardens The array of Garden objects to insert
+   */
   postGardens(gardens: Array<Garden>): void {
     this.loading = true;
     this.appService
@@ -104,7 +117,36 @@ export class HomePageComponent implements OnInit {
 
   newGarden(): void {
     const garden = new Garden();
-    garden.date = moment(this.params.date || new Date()).toDate().toISOString();
+
+    if (this.params.date) {
+      const now = new Date();
+      const date = moment(this.params.date)
+        .hours(now.getHours())
+        .minutes(now.getMinutes())
+        .seconds(now.getSeconds())
+        .milliseconds(now.getMilliseconds());
+      garden.date = date.toISOString();
+    } else {
+      garden.date = new Date().toISOString();
+    }
     this.postGardens([garden]);
+  }
+
+  saveGardens(): void {
+    if (this.gardensToDelete.length > 0) {
+      this.deleteGardens(this.gardensToDelete);
+      this.resetGardensToDelete();
+    }
+    this.gardens.forEach(garden => this.putGarden(garden));
+  }
+
+  // Remove garden from local array.
+  tempDeleteGarden(id: string): void {
+    this.gardensToDelete.push(id);
+    this.gardens = this.gardens.filter(g => g._id !== id);
+  }
+
+  resetGardensToDelete(): void {
+    this.gardensToDelete = [];
   }
 }

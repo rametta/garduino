@@ -8,8 +8,10 @@ const moment = require('moment');
 const ObjectId = mongoose.Types.ObjectId;
 //const Garden = require('./models/garden');
 
-const today = moment().format('YYYYMMDD')
-winston.add(winston.transports.File, { filename: `./logs/${today}.log` });
+winston.add(winston.transports.File, {
+  filename: `./logs/${moment().format('YYYYMMDDHHmmSS')}.log`
+});
+
 const DB_CONNECTION = 'mongodb://localhost/garden_db';
 let Garden;
 
@@ -71,14 +73,20 @@ router
         {
           type: 'POST',
           route: `${BASE}/api/gardens`,
-          params: `garden`,
-          returns: '{Array<Garden>} An array of garden objects modified/inserted'
+          params: `{Array<Garden>} gardens`,
+          returns: '{Array<Garden>} An array of garden objects inserted'
+        },
+        {
+          type: 'PUT',
+          route: `${BASE}/api/gardens`,
+          params: `{Garden} garden`,
+          returns: '{number} Number of gardens updated'
         },
         {
           type: 'DELETE',
           route: `${BASE}/api/gardens`,
-          params: `id`,
-          returns: '{number} Documents deleted'
+          params: `{Array<string>} ids`,
+          returns: '{number} Number of gardens removed'
         }
       ]
     });
@@ -92,6 +100,25 @@ router.route('/gardens')
    * @return {Array<Garden>}
    */
   .get((req, res) => {
+
+    // If no date, return all gardens
+    if (!req.query.date) {
+      db.gardens
+        .find({})
+        .toArray()
+        .then(val => {
+          winston.info(`Found ${val.length} garden(s)`);
+          res.json(val)
+        })
+        .catch(err => {
+          winston.error(err);
+          res.json(err);
+        })
+      
+      return;
+    }
+
+    // Filter by request date
     const date = moment(req.query.date);
     const day = date.date();
     const month = date.month();
@@ -104,7 +131,7 @@ router.route('/gardens')
       .toArray()
       .then(val => {
         winston.info(`Found ${val.length} garden(s)`);
-        res.json(val) 
+        res.json(val)
       })
       .catch(err => {
         winston.error(err);
@@ -137,29 +164,29 @@ router.route('/gardens')
   })
 
   /**
-   * Update gardens
-   * @param {Array<Garden>} gardens
-   * @return {Array<Garden>}
+   * Update garden
+   * @param {Garden} garden
+   * @return {number} Modifeid count
    */
   .put((req, res) => {
-    const gardens = req.body.gardens.map(g => {
-      const garden = new Garden();
-      garden.date = g.date;
-      return garden;
-    });
+    const { garden } = req.body;
+    const { temperature, moisture, humidity, light } = garden;
 
     db.gardens
-      .updateMany(gardens, gardens)
+      .updateOne({ _id: ObjectId(garden._id) }, { $set: {
+        temperature,
+        moisture,
+        humidity,
+        light
+      }})
       .then(val => {
         winston.info(`Updated ${val.modifiedCount} garden(s)`);
-        res.json(val.ops)
+        res.json(val.modifiedCount)
       })
       .catch(err => {
         winston.error(err);
         res.json(err);
       });
-
-    res.json(gardens);
   })
 
   /**

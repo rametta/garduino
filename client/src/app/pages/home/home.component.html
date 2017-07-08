@@ -123,7 +123,7 @@
                     <span [textContent]="garden.light?.toFixed(2)" [hidden]="edit"></span>
                     <input type="number" class="form-control form-control-sm" [(ngModel)]="garden.light" [hidden]="!edit" />
                   </td>
-                  <td class="text-right" [hidden]="!edit"><i class="fa fa-times danger hand" (click)="deleteGardens([garden._id])"></i></td>
+                  <td class="text-right" [hidden]="!edit"><i class="fa fa-times danger hand" (click)="tempDeleteGarden(garden._id)"></i></td>
                 </tr>
               </tbody>
             </table>
@@ -132,8 +132,8 @@
           <div class="d-flex">
             <div class="ml-auto">
               <button class="btn btn-success hand" (click)="newGarden()">New</button>
-              <button class="btn btn-primary hand" [hidden]="!edit" (click)="edit = !edit; putGardens()">Save</button>
-              <button class="btn btn-secondary hand" [hidden]="!edit" (click)="edit = !edit; getGardens()">Cancel</button>
+              <button class="btn btn-primary hand" [hidden]="!edit" (click)="edit = !edit; saveGardens()">Save</button>
+              <button class="btn btn-secondary hand" [hidden]="!edit" (click)="edit = !edit; getGardens(); resetGardensToDelete()">Cancel</button>
               <button *ngIf="gardens?.length > 0" class="btn btn-primary hand" (click)="edit = !edit" [hidden]="edit">Edit <i class="fa fa-edit"></i></button>
             </div>
           </div>
