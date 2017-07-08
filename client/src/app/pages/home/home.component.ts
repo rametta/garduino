@@ -15,6 +15,50 @@ import * as moment from 'moment';
 
 import { AppService, Garden } from './../../app.service';
 
+const multi = [
+  {
+    "name": "Germany",
+    "series": [
+      {
+        "name": "2010",
+        "value": 7300000
+      },
+      {
+        "name": "2011",
+        "value": 8940000
+      }
+    ]
+  },
+
+  {
+    "name": "USA",
+    "series": [
+      {
+        "name": "2010",
+        "value": 7870000
+      },
+      {
+        "name": "2011",
+        "value": 8270000
+      }
+    ]
+  },
+
+  {
+    "name": "France",
+    "series": [
+      {
+        "name": "2010",
+        "value": 5000002
+      },
+      {
+        "name": "2011",
+        "value": 5800000
+      }
+    ]
+  }
+];
+
 @Component({
   selector: 'app-home-page',
   templateUrl: './home.component.html',
@@ -27,6 +71,12 @@ export class HomePageComponent implements OnInit {
   gardens: Array<Garden>;
   params: Params;
   gardensToDelete: Array<string> = [];
+
+  // Chart
+  chartData = [];
+  colorScheme = {
+    domain: ['#2dc473', '#b326cc', '#2684cc', '#cc2626']
+  };
 
   constructor(
     public appService: AppService,
@@ -43,6 +93,7 @@ export class HomePageComponent implements OnInit {
         console.log(gardens)
         this.loading = false;
         this.gardens = gardens;
+        this.generateChartPoints();
       });
   }
 
@@ -64,6 +115,9 @@ export class HomePageComponent implements OnInit {
       .first()
       .subscribe(modifedCount => {
         this.loading = false;
+        if (modifedCount > 0) {
+          this.generateChartPoints();
+        }
       });
   }
 
@@ -75,6 +129,7 @@ export class HomePageComponent implements OnInit {
       .subscribe(gardens => {
         this.loading = false;
         this.gardens = gardens;
+        this.generateChartPoints();
       });
   }
 
@@ -92,6 +147,7 @@ export class HomePageComponent implements OnInit {
         this.loading = false;
         if (deleteCount > 0) {
           this.gardens = this.gardens.filter(l => !(ids.indexOf(l._id) > -1));
+          this.generateChartPoints();
         }
       });
   }
@@ -112,6 +168,7 @@ export class HomePageComponent implements OnInit {
             this.gardens.push(garden);
           });
         }
+        this.generateChartPoints();
       });
   }
 
@@ -148,5 +205,46 @@ export class HomePageComponent implements OnInit {
 
   resetGardensToDelete(): void {
     this.gardensToDelete = [];
+  }
+
+  generateChartPoints(): void {
+    this.chartData = [
+      {
+        name: 'Temperature',
+        series: []
+      },
+      {
+        name: 'Humidity',
+        series: []
+      },
+      {
+        name: 'Light Level',
+        series: []
+      },
+      {
+        name: 'Moisture',
+        series: []
+      }
+    ];
+
+    this.gardens.forEach(g => {
+      const name = moment(g.date).format('LTS');
+
+      if (g.temperature) {
+        this.chartData[0].series.push({ name, value: g.temperature });
+      }
+
+      if (g.humidity) {
+        this.chartData[1].series.push({ name, value: g.humidity });
+      }
+
+      if (g.light) {
+        this.chartData[2].series.push({ name, value: g.light });
+      }
+
+      if (g.moisture) {
+        this.chartData[3].series.push({ name, value: g.moisture });
+      }
+    });
   }
 }

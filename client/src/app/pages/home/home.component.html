@@ -1,6 +1,6 @@
 <section class="container-fluid">
   <div class="row">
-    <div class="col-xl-3 col-md-6 col-sm-12">
+    <div class="col-xl-3 col-md-6 col-sm-12 margin-top">
       <div class="card card-inverse card-success text-xs-center status-card">
         <div class="card-block">
           <h4 class="card-title d-flex align-items-center">
@@ -11,7 +11,7 @@
         </div>
       </div>
     </div>
-    <div class="col-xl-3 col-md-6 col-sm-12">
+    <div class="col-xl-3 col-md-6 col-sm-12 margin-top">
       <div class="card card-inverse card-danger text-xs-center status-card">
         <div class="card-block">
           <h4 class="card-title d-flex align-items-center">
@@ -22,7 +22,7 @@
         </div>
       </div>
     </div>
-    <div class="col-xl-3 col-md-6 col-sm-12">
+    <div class="col-xl-3 col-md-6 col-sm-12 margin-top">
       <div class="card card-inverse card-warning text-xs-center status-card">
         <div class="card-block">
           <h4 class="card-title d-flex align-items-center">
@@ -33,7 +33,7 @@
         </div>
       </div>
     </div>
-    <div class="col-xl-3 col-md-6 col-sm-12">
+    <div class="col-xl-3 col-md-6 col-sm-12 margin-top">
       <div class="card card-inverse card-success text-xs-center status-card">
         <div class="card-block">
           <h4 class="card-title d-flex align-items-center">
@@ -47,99 +47,123 @@
   </div>
 </section>
 
-<section class="container-fluid logs-section">
+<section class="container-fluid">
   <div class="row">
-    <div class="col-lg-4 col-md-6 col-sm-12 log-date-section">
+    <div class="col-lg-4 col-md-6 col-sm-12 margin-top">
       <app-datepicker [hidden]="edit"></app-datepicker>
     </div>
-    <div class="col-lg-3 col-md-6 push-xl-5 push-lg-5 log-date-section">
+    <div class="col-lg-3 col-md-6 push-xl-5 push-lg-5 margin-top">
       <app-calendar [hidden]="edit"></app-calendar>
     </div>
   </div>
   <div class="row">
-    <div class="col-lg-12">
+    <div class="col-lg-12 margin-top">
 
-      <div class="card">
-        <div class="card-header d-flex">
-          <strong>Logs</strong>
-          <div class="loading">
-            <app-loading [hidden]="!loading"></app-loading>
-          </div>
-          <div class="ml-auto">
-            <div>Records: {{gardens?.length || 0}}</div>
-          </div>
-        </div>
-        <div class="card-block">
-          <div class="table-responsive table-logs-container">
-            <table class="table table-sm table-logs">
-              <thead>
-                <tr>
-                  <th>
-                    <span ngbTooltip="Time" placement="top">
-                      <i class="fa fa-clock-o"></i> <span class="hidden-xs-down">Time</span>
-                    </span>
-                  </th>
-                  <th class="text-right">
-                    <span ngbTooltip="Temperature" placement="top">
-                      <i class="fa fa-thermometer-half"></i> <span class="hidden-xs-down">Temperature</span>
-                    </span>
-                  </th>
-                  <th class="text-right">
-                    <span ngbTooltip="Humidity" placement="top">
-                      <i class="fa fa-tint"></i> <span class="hidden-xs-down">Humidity</span>
-                    </span>
-                  </th>
-                  <th class="text-right">
-                    <span ngbTooltip="Light Level" placement="top">
-                      <i class="fa fa-sun-o"></i> <span class="hidden-xs-down">Light Level</span>
-                    </span>
-                  </th>
-                  <th class="text-right">
-                    <span ngbTooltip="Moisture" placement="top">
-                      <i class="fa fa-tint"></i> <span class="hidden-xs-down">Moisture</span>
-                    </span>
-                  </th>
-                  <th [hidden]="!edit"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let garden of gardens">
-                  <td class="time">
-                    <span [textContent]="garden.date | date:'shortTime'"></span>
-                  </td>
-                  <td class="text-right">
-                    <span [textContent]="garden.temperature?.toFixed(2)" [hidden]="edit"></span>
-                    <input type="number" class="form-control form-control-sm" [(ngModel)]="garden.temperature" [hidden]="!edit" />
-                  </td>
-                  <td class="text-right">
-                    <span [textContent]="garden.moisture?.toFixed(2)" [hidden]="edit"></span>
-                    <input type="number" class="form-control form-control-sm" [(ngModel)]="garden.moisture" [hidden]="!edit" />
-                  </td>
-                  <td class="text-right">
-                    <span [textContent]="garden.humidity?.toFixed(2)" [hidden]="edit"></span>
-                    <input type="number" class="form-control form-control-sm" [(ngModel)]="garden.humidity" [hidden]="!edit" />
-                  </td>
-                  <td class="text-right">
-                    <span [textContent]="garden.light?.toFixed(2)" [hidden]="edit"></span>
-                    <input type="number" class="form-control form-control-sm" [(ngModel)]="garden.light" [hidden]="!edit" />
-                  </td>
-                  <td class="text-right" [hidden]="!edit"><i class="fa fa-times danger hand" (click)="tempDeleteGarden(garden._id)"></i></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+      <ngb-tabset>
+        <ngb-tab>
+          <ng-template ngbTabTitle><i class="fa fa-line-chart"></i> Line Chart</ng-template>
+          <ng-template ngbTabContent>
 
-          <div class="d-flex">
-            <div class="ml-auto">
-              <button class="btn btn-success hand" (click)="newGarden()">New</button>
-              <button class="btn btn-primary hand" [hidden]="!edit" (click)="edit = !edit; saveGardens()">Save</button>
-              <button class="btn btn-secondary hand" [hidden]="!edit" (click)="edit = !edit; getGardens(); resetGardensToDelete()">Cancel</button>
-              <button *ngIf="gardens?.length > 0" class="btn btn-primary hand" (click)="edit = !edit" [hidden]="edit">Edit <i class="fa fa-edit"></i></button>
+            <div class="margin-top">
+              <div class="chart-container" *ngIf="chartData?.length > 0 && gardens?.length > 0">
+                <ngx-charts-line-chart
+                  [scheme]="colorScheme"
+                  [results]="chartData"
+                  [xAxis]="true"
+                  [yAxis]="true"
+                  [legend]="true"
+                  [showXAxisLabel]="true"
+                  xAxisLabel="Time"
+                  [autoScale]="true">
+                </ngx-charts-line-chart>
+              </div>
+
+              <div [hidden]="chartData?.length > 0 && gardens?.length > 0">No data available for this date.</div>
             </div>
-          </div>
 
-        </div>
-      </div>
+          </ng-template>
+        </ngb-tab>
+        <ngb-tab>
+          <ng-template ngbTabTitle><i class="fa fa-table"></i> Data
+            <app-loading [hidden]="!loading"></app-loading>
+          </ng-template>
+          <ng-template ngbTabContent>
+
+            <div class="margin-top">
+              <div class="table-responsive table-logs-container">
+                <table class="table table-sm table-logs">
+                  <thead>
+                    <tr>
+                      <th>
+                        <span ngbTooltip="Time" placement="top">
+                      <i class="fa fa-clock-o"></i> <span class="hidden-xs-down">Time</span>
+                        </span>
+                      </th>
+                      <th class="text-right">
+                        <span ngbTooltip="Temperature" placement="top">
+                      <i class="fa fa-thermometer-half"></i> <span class="hidden-xs-down">Temperature</span>
+                        </span>
+                      </th>
+                      <th class="text-right">
+                        <span ngbTooltip="Humidity" placement="top">
+                      <i class="fa fa-tint"></i> <span class="hidden-xs-down">Humidity</span>
+                        </span>
+                      </th>
+                      <th class="text-right">
+                        <span ngbTooltip="Light Level" placement="top">
+                      <i class="fa fa-sun-o"></i> <span class="hidden-xs-down">Light Level</span>
+                        </span>
+                      </th>
+                      <th class="text-right">
+                        <span ngbTooltip="Moisture" placement="top">
+                      <i class="fa fa-tint"></i> <span class="hidden-xs-down">Moisture</span>
+                        </span>
+                      </th>
+                      <th [hidden]="!edit"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let garden of gardens">
+                      <td class="time">
+                        <span [textContent]="garden.date | date:'shortTime'"></span>
+                      </td>
+                      <td class="text-right">
+                        <span [textContent]="garden.temperature?.toFixed(2)" [hidden]="edit"></span>
+                        <input type="number" class="form-control form-control-sm" [(ngModel)]="garden.temperature" [hidden]="!edit" />
+                      </td>
+                      <td class="text-right">
+                        <span [textContent]="garden.moisture?.toFixed(2)" [hidden]="edit"></span>
+                        <input type="number" class="form-control form-control-sm" [(ngModel)]="garden.moisture" [hidden]="!edit" />
+                      </td>
+                      <td class="text-right">
+                        <span [textContent]="garden.humidity?.toFixed(2)" [hidden]="edit"></span>
+                        <input type="number" class="form-control form-control-sm" [(ngModel)]="garden.humidity" [hidden]="!edit" />
+                      </td>
+                      <td class="text-right">
+                        <span [textContent]="garden.light?.toFixed(2)" [hidden]="edit"></span>
+                        <input type="number" class="form-control form-control-sm" [(ngModel)]="garden.light" [hidden]="!edit" />
+                      </td>
+                      <td class="text-right" [hidden]="!edit"><i class="fa fa-times danger hand" (click)="tempDeleteGarden(garden._id)"></i></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="d-flex">
+                <div>Records: {{gardens?.length || 0}}</div>
+                <div class="ml-auto">
+                  <button class="btn btn-success hand" (click)="newGarden()">New</button>
+                  <button class="btn btn-primary hand" [hidden]="!edit" (click)="edit = !edit; saveGardens()">Save</button>
+                  <button class="btn btn-secondary hand" [hidden]="!edit" (click)="edit = !edit; getGardens(); resetGardensToDelete()">Cancel</button>
+                  <button *ngIf="gardens?.length > 0" class="btn btn-primary hand" (click)="edit = !edit" [hidden]="edit">Edit <i class="fa fa-edit"></i></button>
+                </div>
+              </div>
+
+            </div>
+
+          </ng-template>
+        </ngb-tab>
+      </ngb-tabset>
 
     </div>
   </div>

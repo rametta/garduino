@@ -1,12 +1,15 @@
 // Angular
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { HttpModule } from '@angular/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 // 3rd Party
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 // Pages
 import { AppComponent } from './app.component';
@@ -28,11 +31,14 @@ import { AppService } from './app.service';
 @NgModule({
     imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
+
     NgbModule.forRoot(),
+    NgxChartsModule,
 
     AppRoutingModule
   ],

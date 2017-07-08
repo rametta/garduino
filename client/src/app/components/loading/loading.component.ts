@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-loading',
-  templateUrl: './loading.component.html',
-  styleUrls: ['./loading.component.scss']
+  template: `<i class="fa fa-spinner fa-pulse fa-fw primary"></i>`
 })
 export class LoadingComponent { }

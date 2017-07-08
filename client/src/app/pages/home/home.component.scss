@@ -1,19 +1,11 @@
 @import './../../styles/litera.scss';
 
-.status-card {
+.margin-top {
   margin-top: 1em;
 }
 
 .card-title {
   margin-bottom: 0;
-}
-
-.logs-section {
-  margin-top: 1em;
-}
-
-.log-date-section {
-  margin: 1em 0;
 }
 
 .table-logs {
@@ -33,4 +25,8 @@
 
 .time {
   white-space: nowrap;
+}
+
+.chart-container {
+  height: 600px;
 }
