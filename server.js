@@ -5,15 +5,20 @@ const compression = require('compression');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const moment = require('moment');
-const ObjectId = mongoose.Types.ObjectId;
-//const Garden = require('./models/garden');
 
+// const GardenController = require('./controllers/garden');
+
+// Logging
 winston.add(winston.transports.File, {
   filename: `./logs/${moment().format('YYYYMMDDHHmmSS')}.log`
 });
 
+// Mongo database
 const DB_CONNECTION = 'mongodb://localhost/garden_db';
-let Garden;
+const ObjectId = mongoose.Types.ObjectId;
+mongoose.Promise = global.Promise;
+mongoose.connect(DB_CONNECTION, { useMongoClient: true });
+const db = mongoose.connection.collections;
 
 // Express Static File & API Server
 const app = express();
@@ -21,34 +26,11 @@ const router = express.Router();
 const web = '/client/dist';
 const port = process.env.PORT || 8080;
 
-app
-  .use(bodyParser.urlencoded({ extended: true }))
-  .use(bodyParser.json())
-  .use(helmet()) // Applies security precautions
-  .use(compression()) // gzip compress
-  .use('/', express.static(__dirname + web, { maxAge: '20d' }))
-  .use('/api', router)
-  .use('*', (req, res) => res.sendFile(__dirname + web + '/index.html'))
-
-// Mongo database
-mongoose.Promise = global.Promise;
-mongoose.connect(DB_CONNECTION, { useMongoClient: true });
-const db = mongoose.connection.collections;
 mongoose.connection
   .once('open', () => {
     winston.info('Database connected', { database: mongoose.connection.db.databaseName })
 
-    const Schema = mongoose.Schema;
-
-    const GardenSchema = new Schema({
-      date: Date,
-      temperature: Number,
-      humidity: Number,
-      moisture: Number,
-      light: Number
-    });
-
-    Garden = mongoose.model('garden', GardenSchema);
+    const Garden = require('./models/garden');
 
     // Start the express server after connecting to DB
     app.listen(port, () => {
@@ -57,7 +39,18 @@ mongoose.connection
   })
   .on('error', () => winston.error('Database connection error'));
 
+app
+  .use(bodyParser.urlencoded({ extended: true }))
+  .use(bodyParser.json())
+  .use(helmet()) // Applies security precautions
+  .use(compression()) // gzip compress
+  .use(express.static(__dirname + web, { maxAge: '20d' }))
+  .use('/api', router)
+  .use('*', (req, res) => res.sendFile(__dirname + web + '/index.html'));
+
+
 router
+  // .get('/test', GardenController.getGardens)
   .get('/', (req, res) => {
     const BASE = `http://localhost:${port}`;
 
@@ -114,7 +107,7 @@ router.route('/gardens')
           winston.error(err);
           res.json(err);
         })
-      
+
       return;
     }
 
@@ -173,12 +166,14 @@ router.route('/gardens')
     const { temperature, moisture, humidity, light } = garden;
 
     db.gardens
-      .updateOne({ _id: ObjectId(garden._id) }, { $set: {
-        temperature,
-        moisture,
-        humidity,
-        light
-      }})
+      .updateOne({ _id: ObjectId(garden._id) }, {
+        $set: {
+          temperature,
+          moisture,
+          humidity,
+          light
+        }
+      })
       .then(val => {
         winston.info(`Updated ${val.modifiedCount} garden(s)`);
         res.json(val.modifiedCount)

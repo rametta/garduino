@@ -15,7 +15,7 @@
 To run a build, go to `~/client` and run `ng build --prod`. The artifacts will go in `~/client/dist`.
 
 ## Start in production
-To start in production, make sure you run a build first, then just run `npm start` in the server root to host the static build files and API. Go to [http://localhost:8080](http://localhost:8080) to see the app. You may run this in the background on unix based machines by appending an `&` to the command like this `npm start &`
+To start in production, make sure you run a build first, then just run `npm start` in the server root to host the static build files and API. Go to [http://localhost:8080](http://localhost:8080) to see the app. You may want to run this app forever, so downloading `PM2` will allow you to run the app as a service. Run `pm2 start app.js` to start the app.
 
 ## Materials
 
@@ -37,15 +37,15 @@ API server built with Node, ExpressJS.
 
 Routes:
 * ANY `/api` - Welcome route, with info.
-* GET, POST, DELETE `/api/gardens`
+* GET, POST, DELETE, PUT `/api/gardens`
 
 ## Data
 
 Data stored in MongoDB using Mongoose.
 
 ## Progress
-| Task     | Status |
-| -------- | ------ |
+| Task | Status |
+| ----- | ------ |
 | Client side interface | 100%
 | Node CRUD API | 100%
 | Pi Connection to Arduino | 0%
