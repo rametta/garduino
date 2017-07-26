@@ -19,6 +19,7 @@ const ObjectId = mongoose.Types.ObjectId;
 mongoose.Promise = global.Promise;
 mongoose.connect(DB_CONNECTION, { useMongoClient: true });
 const db = mongoose.connection.collections;
+let Garden;
 
 // Express Static File & API Server
 const app = express();
@@ -30,7 +31,7 @@ mongoose.connection
   .once('open', () => {
     winston.info('Database connected', { database: mongoose.connection.db.databaseName })
 
-    const Garden = require('./models/garden');
+    Garden = require('./models/garden');
 
     // Start the express server after connecting to DB
     app.listen(port, () => {
