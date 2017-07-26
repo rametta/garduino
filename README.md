@@ -50,5 +50,4 @@ Data stored in MongoDB using Mongoose.
 | Node CRUD API | 100%
 | Pi Connection to Arduino | 0%
 | Arduino Program | 0%
-| Circuit prototype | 0%
-| Ciruit | 0%
+| Circuit | 20%

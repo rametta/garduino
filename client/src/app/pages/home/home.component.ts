@@ -15,50 +15,6 @@ import * as moment from 'moment';
 
 import { AppService, Garden } from './../../app.service';
 
-const multi = [
-  {
-    "name": "Germany",
-    "series": [
-      {
-        "name": "2010",
-        "value": 7300000
-      },
-      {
-        "name": "2011",
-        "value": 8940000
-      }
-    ]
-  },
-
-  {
-    "name": "USA",
-    "series": [
-      {
-        "name": "2010",
-        "value": 7870000
-      },
-      {
-        "name": "2011",
-        "value": 8270000
-      }
-    ]
-  },
-
-  {
-    "name": "France",
-    "series": [
-      {
-        "name": "2010",
-        "value": 5000002
-      },
-      {
-        "name": "2011",
-        "value": 5800000
-      }
-    ]
-  }
-];
-
 @Component({
   selector: 'app-home-page',
   templateUrl: './home.component.html',
@@ -71,6 +27,8 @@ export class HomePageComponent implements OnInit {
   gardens: Array<Garden>;
   params: Params;
   gardensToDelete: Array<string> = [];
+	error;
+	showError = false;
 
   // Chart
   chartData = [];
@@ -94,7 +52,11 @@ export class HomePageComponent implements OnInit {
         this.loading = false;
         this.gardens = gardens;
         this.generateChartPoints();
-      });
+      }, err => {
+				this.loading = false;
+				this.error = err;
+				this.showError = true;
+			});
   }
 
   getGardens$(date: string): Observable<Array<Garden>> {
@@ -130,7 +92,11 @@ export class HomePageComponent implements OnInit {
         this.loading = false;
         this.gardens = gardens;
         this.generateChartPoints();
-      });
+      }, err => {
+				this.loading = false;
+				this.error = err;
+				this.showError = true;
+			});
   }
 
   /**
@@ -149,7 +115,11 @@ export class HomePageComponent implements OnInit {
           this.gardens = this.gardens.filter(l => !(ids.indexOf(l._id) > -1));
           this.generateChartPoints();
         }
-      });
+      }, err => {
+				this.loading = false;
+				this.error = err;
+				this.showError = true;
+			});
   }
 
   /**
@@ -161,15 +131,19 @@ export class HomePageComponent implements OnInit {
     this.appService
       .postGardens(gardens)
       .first()
-      .subscribe(gardens => {
+      .subscribe(savedGardens => {
         this.loading = false;
-        if (gardens.length > 0) {
-          gardens.forEach(garden => {
+        if (savedGardens.length > 0) {
+          savedGardens.forEach(garden => {
             this.gardens.push(garden);
           });
         }
         this.generateChartPoints();
-      });
+      }, err => {
+				this.loading = false;
+				this.error = err;
+				this.showError = true;
+			});
   }
 
   newGarden(): void {
